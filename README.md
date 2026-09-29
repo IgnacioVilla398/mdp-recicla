@@ -2,7 +2,7 @@
 
 Plataforma web de recolección y monetización de residuos reciclables en Mar del Plata, Argentina.
 
-**Estado: MVP completo (Pasos 1 a 4)** — base de datos, API (auth, materiales, pesajes, cobros y bolsas), panel del cliente y panel de administración funcionando, con 60 pruebas automáticas en verde.
+**Estado: MVP completo (Pasos 1 a 4) + landing page** — base de datos, API (auth, materiales, pesajes, cobros y bolsas), panel del cliente, panel de administración y landing pública, con 76 pruebas automáticas en verde.
 
 ---
 
@@ -36,14 +36,14 @@ Scripts disponibles:
 | `npm run db:seed` | Carga datos de prueba si la base está vacía |
 | `npm run db:seed -- --force` | Borra los datos del MVP y recarga |
 | `npm run db:reset` | Reconstruye la base desde cero |
-| `npm run test:api` | Prueba end-to-end de la API (60 verificaciones) |
+| `npm run test:api` | Prueba end-to-end de la API (76 verificaciones) |
 
 ### Páginas
 
 | Ruta | Descripción |
 | --- | --- |
-| `/` | Landing con precios por kilo en vivo |
-| `/login.html` · `/registro.html` | Ingreso y alta de vecino |
+| `/` | **Landing pública**: hero, quiénes somos, cómo funciona, precios, zonas y días, FAQ, WhatsApp flotante y modal de acceso |
+| `/login.html` · `/registro.html` | Ingreso y alta de vecino (páginas completas) |
 | `/dashboard.html` | **Panel del cliente** (Paso 3) |
 | `/admin.html` | **Panel de administración** (Paso 4) |
 
@@ -81,26 +81,33 @@ mdp-recicla/
 ├── package.json
 ├── .env.example
 ├── db/                        # archivo SQLite (generado, en .gitignore)
+├── img/                       # imágenes originales (50 MB, en .gitignore)
 ├── docs/
 │   ├── 01-esquema-bd.md       # diseño de datos (Paso 1)
 │   ├── 02-api.md              # referencia de la API (Paso 2)
 │   ├── 03-frontend-cliente.md # vistas del cliente (Paso 3)
 │   ├── 04-frontend-admin.md   # panel de administración (Paso 4)
+│   ├── 05-landing.md          # landing page
 │   └── capturas/              # pantallas renderizadas
 ├── scripts/
-│   └── smoke.mjs              # prueba end-to-end de la API
-├── public/                    # frontend (Pasos 3 y 4)
+│   ├── smoke.mjs              # prueba end-to-end de la API
+│   └── optimizar-imagenes.py  # genera public/img/ desde img/
+├── public/                    # frontend
 │   ├── index.html             # landing
 │   ├── login.html             # ingreso
 │   ├── registro.html          # alta de vecino
 │   ├── dashboard.html         # panel del cliente
 │   ├── admin.html             # panel de administración
+│   ├── img/                   # imágenes optimizadas (webp + jpg)
 │   └── assets/
-│       ├── css/styles.css     # sistema de diseño mobile-first
+│       ├── css/
+│       │   ├── styles.css     # sistema de diseño mobile-first
+│       │   └── landing.css    # estilos de la landing
 │       └── js/
 │           ├── api.js         # cliente HTTP, formato y guardas de sesión
 │           ├── dashboard.js   # render del panel del cliente
-│           └── admin.js       # ruta del día, carga de pesajes, precios y cobros
+│           ├── admin.js       # ruta del día, carga de pesajes, precios y cobros
+│           └── landing.js     # navegación, FAQ, modal y cronograma de zonas
 └── src/
     ├── server.js              # arranque del servidor HTTP
     ├── app.js                 # app Express, middlewares y montaje de rutas
@@ -151,6 +158,7 @@ Decisiones clave ya implementadas:
 - **Precio histórico**: cada pesaje guarda el precio vigente a su fecha, así actualizar la lista de precios no altera meses ya liquidados.
 - **Aislamiento por rol**: el vecino solo accede a sus propios datos; el rol se revalida contra la base en cada request.
 - **Saldo disponible**: descuenta pagos confirmados y solicitudes pendientes, evitando cobrar dos veces el mismo saldo.
+- **Landing conectada**: el cronograma de zonas se lee de la API (si el admin cambia un día, la web se actualiza) y el modal de acceso registra vecinos de verdad.
 
 ## Roadmap
 
@@ -158,6 +166,13 @@ Decisiones clave ya implementadas:
 - [x] **Paso 2** — API de autenticación (`register`, `login`) y gestión de materiales/pesajes
 - [x] **Paso 3** — Vistas frontend del cliente (`/dashboard`): resumen, cronograma, historial y solicitud de cobro
 - [x] **Paso 4** — Vistas frontend del administrador (`/admin`): ruta del día, carga rápida de peso, precios y pagos
+- [x] **Landing page** — web pública mobile-first con precios, zonas, FAQ, WhatsApp y modal de acceso
+
+## Pendientes conocidos
+
+- **Precios de la landing vs. catálogo**: la landing publica $1.600 (aluminio), $350 (PET) y $9.600 (cobre), mientras el catálogo del sistema tiene $2.500, $750 y $9.500. Hay que unificarlos (ver [`docs/05-landing.md`](docs/05-landing.md)).
+- **Número de WhatsApp**: `WHATSAPP` en [`public/assets/js/landing.js`](public/assets/js/landing.js) es un placeholder.
+- **Imágenes de la landing**: el mapeo de `img/` se hizo por nombre de archivo, conviene revisar que cada foto sea la correcta para su sección.
 
 ## Próximos pasos sugeridos
 

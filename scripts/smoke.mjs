@@ -298,14 +298,36 @@ check('GET /api/materials/:id/history es solo para admin',
   (await call('GET', `/api/materials/${materialList[0].id}/history`, { token: clientToken })).status === 403);
 
 // ------------------------------------------------------------------
-// Frontend estatico (Paso 3)
+// Frontend estatico (Paneles y landing)
 // ------------------------------------------------------------------
-for (const ruta of ['/', '/login.html', '/registro.html', '/dashboard.html', '/admin.html', '/assets/css/styles.css', '/assets/js/api.js', '/assets/js/dashboard.js', '/assets/js/admin.js']) {
+const rutasEstaticas = [
+  '/', '/login.html', '/registro.html', '/dashboard.html', '/admin.html',
+  '/assets/css/styles.css', '/assets/css/landing.css',
+  '/assets/js/api.js', '/assets/js/dashboard.js', '/assets/js/admin.js', '/assets/js/landing.js',
+  '/img/hero-1600.webp', '/img/hero-900.jpg', '/img/nosotros.webp',
+  '/img/material-aluminio.webp', '/img/material-plastico.jpg', '/img/material-cobre.webp',
+];
+for (const ruta of rutasEstaticas) {
   const res = await fetch(`${BASE}${ruta}`);
   check(`GET ${ruta} se sirve correctamente`, res.status === 200, `status ${res.status}`);
 }
 
-console.log('\n===== Prueba end-to-end de la API (Pasos 2-4) =====');
+// La landing servida debe traer todas las secciones pedidas
+const landing = await (await fetch(`${BASE}/`)).text();
+for (const [nombre, marca] of [
+  ['hero', 'id="inicio"'],
+  ['nosotros', 'id="nosotros"'],
+  ['como funciona', 'id="como-funciona"'],
+  ['precios', 'id="precios"'],
+  ['zonas', 'id="zonas"'],
+  ['faq', 'id="faq"'],
+  ['whatsapp flotante', 'class="whatsapp"'],
+  ['modal de acceso', 'id="modal"'],
+]) {
+  check(`la landing incluye la seccion ${nombre}`, landing.includes(marca));
+}
+
+console.log('\n===== Prueba end-to-end de la API (Pasos 2-4 + landing) =====');
 console.log(results.join('\n'));
 console.log(`\n  ${passed} pruebas OK, ${failed} fallidas\n`);
 process.exit(failed === 0 ? 0 : 1);

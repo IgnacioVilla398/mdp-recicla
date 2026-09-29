@@ -3,93 +3,487 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MdP Recicla — Reciclá y ganá</title>
-  <meta name="description" content="Recolección de reciclables a domicilio en Mar del Plata. Separá, entregá y cobrá por tus kilos." />
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <title>MdP Recicla — Reciclamos en tu puerta y te pagamos | Mar del Plata</title>
+  <meta name="description" content="Te llevamos bolsas gratis, pasamos a buscar tus latas, metales y plásticos por tu barrio de Mar del Plata y a fin de mes cobrás por todo lo acumulado." />
+  <meta name="theme-color" content="#2E7D32" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MdP Recicla — Reciclamos en tu puerta y te pagamos" />
+  <meta property="og:description" content="Recolección de reciclables a domicilio en Mar del Plata. Bolsas gratis, pesaje en tu puerta y pago a fin de mes." />
+  <meta property="og:image" content="/img/hero-900.jpg" />
+  <meta property="og:locale" content="es_AR" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
+  <link rel="preload" as="image" href="/img/hero-900.webp" type="image/webp" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/landing.css" />
 </head>
-<body>
-  <header class="barra">
-    <div class="barra__interior">
-      <a class="marca" href="/"><span class="marca__icono">♻</span> MdP Recicla</a>
-      <nav class="barra__usuario">
-        <a class="boton boton--secundario boton--chico" href="/login.html">Ingresar</a>
-        <a class="boton boton--chico" href="/registro.html">Crear cuenta</a>
+<body class="landing">
+  <a class="saltar" href="#inicio">Saltar al contenido principal</a>
+
+  <!-- ============ CABECERA ============ -->
+  <header class="cabecera" id="cabecera">
+    <div class="cabecera__interior">
+      <a class="marca" href="#inicio" aria-label="MdP Recicla, ir al inicio">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+          <defs>
+            <linearGradient id="mdp-logo" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#43A047" />
+              <stop offset="1" stop-color="#1B5E20" />
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="13" fill="url(#mdp-logo)" />
+          <path d="M33.6 13.6c-9.4 1-14.8 5.7-16.3 13-.4 2.1-.4 3.7-.2 4.7 1.7.2 3.6.1 5.6-.3 7.3-1.5 11.3-7 11.9-16.4.05-.9-.2-1.1-1-1z" fill="#fff" />
+          <path d="M14.6 34.4c2.4-5.2 5.7-9.2 10.6-12.1" fill="none" stroke="#1B5E20" stroke-width="2.1" stroke-linecap="round" />
+          <circle cx="35" cy="34.5" r="6.6" fill="#FBC02D" />
+          <text x="35" y="38.4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#5D4037">$</text>
+        </svg>
+        <span>
+          MdP Recicla
+          <span class="marca__texto-chico">Mar del Plata</span>
+        </span>
+      </a>
+
+      <nav class="menu" id="menu" aria-label="Navegación principal">
+        <ul class="menu__lista">
+          <li><a class="menu__enlace" href="#inicio">Inicio</a></li>
+          <li><a class="menu__enlace" href="#nosotros">Quiénes somos</a></li>
+          <li><a class="menu__enlace" href="#como-funciona">Cómo funciona</a></li>
+          <li><a class="menu__enlace" href="#precios">Precios</a></li>
+          <li><a class="menu__enlace" href="#zonas">Zonas y días</a></li>
+          <li><a class="menu__enlace" href="#faq">Preguntas</a></li>
+          <li class="menu__cta"><button class="boton" type="button" data-abrir-modal="registro">Acceso / Registrarse</button></li>
+        </ul>
       </nav>
+
+      <button class="hamburguesa" id="btn-menu" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
   <main>
-    <div class="contenedor">
-      <section class="hero">
-        <h1>Reciclá en casa y cobrá por tus kilos</h1>
-        <p>
-          Pasamos por tu barrio con bolsas, retiramos tus reciclables, los pesamos y te acreditamos
-          el valor en pesos. Vos decidís si cobrás el saldo a fin de mes o lo seguís acumulando.
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="inicio">
+      <picture class="hero__media">
+        <source type="image/webp" srcset="/img/hero-480.webp 480w, /img/hero-900.webp 900w, /img/hero-1600.webp 1600w" sizes="100vw" />
+        <img class="hero__fondo" src="/img/hero-900.jpg" srcset="/img/hero-480.jpg 480w, /img/hero-900.jpg 900w, /img/hero-1600.jpg 1600w" sizes="100vw" width="1600" height="900" alt="Bolsas de reciclables listas para retirar en la puerta de una casa" fetchpriority="high" />
+      </picture>
+
+      <div class="hero__contenido contenedor">
+        <p class="hero__etiqueta">♻ Servicio 100% marplatense</p>
+        <h1>¡Reciclamos en tu puerta y te pagamos por cuidar Mar del Plata!</h1>
+        <p class="hero__bajada">
+          Te llevamos bolsas gratis, pasamos a buscar tus latas, metales y plásticos por tu barrio,
+          y a fin de mes cobrás por todo lo acumulado.
         </p>
+
         <div class="hero__acciones">
-          <a class="boton boton--bloque" href="/registro.html">Quiero sumarme</a>
-          <a class="boton boton--secundario boton--bloque" href="/login.html">Ya tengo cuenta</a>
+          <button class="boton boton--dorado boton--grande" type="button" data-abrir-modal="registro">
+            Registrarme para recibir mi bolsa
+          </button>
+          <a class="boton boton--fantasma boton--grande" href="#zonas">Ver días y zonas de recolección</a>
         </div>
-      </section>
 
-      <div class="grilla grilla--2">
-        <section class="tarjeta">
-          <div class="tarjeta__titulo"><h2>Cómo funciona</h2></div>
-          <ol class="pasos">
-            <li><div><strong>Te registrás y elegís tu barrio.</strong><div class="texto-chico">Te asignamos el día de recorrido de tu zona.</div></div></li>
-            <li><div><strong>Recibís las bolsas.</strong><div class="texto-chico">El equipo las entrega en tu domicilio.</div></div></li>
-            <li><div><strong>Retiramos y pesamos.</strong><div class="texto-chico">Aluminio, cobre, plásticos, cartón y más.</div></div></li>
-            <li><div><strong>Ves tu saldo en el panel.</strong><div class="texto-chico">Kilos y pesos actualizados en el momento.</div></div></li>
-            <li><div><strong>Cobrás cuando quieras.</strong><div class="texto-chico">Solicitás la transferencia por CBU, CVU o alias.</div></div></li>
-          </ol>
-        </section>
-
-        <section class="tarjeta">
-          <div class="tarjeta__titulo">
-            <h2>Materiales que recibimos</h2>
-            <span class="etiqueta etiqueta--ok">Precio por kg</span>
-          </div>
-          <div id="materiales" class="cargando">Cargando materiales…</div>
-          <p class="texto-chico" style="margin-top:.75rem">
-            Los precios se actualizan según el mercado y se aplican al momento del pesaje.
-          </p>
-        </section>
+        <ul class="hero__beneficios">
+          <li>🎁 Bolsas gratis</li>
+          <li>🚚 Retiro sin costo</li>
+          <li>⚖️ Pesaje en tu puerta</li>
+          <li>💸 Cobrás a fin de mes</li>
+        </ul>
       </div>
-    </div>
+    </section>
+
+    <!-- ============ NOSOTROS ============ -->
+    <section class="seccion seccion--alterna" id="nosotros">
+      <div class="contenedor">
+        <div class="nosotros">
+          <img class="nosotros__imagen revelar" src="/img/nosotros.jpg" width="1200" height="900" loading="lazy" alt="Equipo de MdP Recicla trabajando con material reciclable" />
+          <div class="nosotros__texto revelar revelar--1">
+            <span class="seccion__etiqueta">Quiénes somos</span>
+            <h2>Un emprendimiento marplatense que le pone el cuerpo a la economía circular</h2>
+            <p>
+              Somos un emprendimiento 100% marplatense comprometido con el medio ambiente y la economía
+              circular de nuestra ciudad. Buscamos facilitar el reciclaje doméstico eliminando los traslados:
+              nosotros nos encargamos de llevarte las bolsas, pesar el material en la puerta de tu casa y
+              recompensarte económicamente a fin de mes.
+            </p>
+            <p>
+              Acumulamos a gran escala para darle el mejor valor a tu esfuerzo.
+            </p>
+
+            <div class="nosotros__datos">
+              <div class="nosotros__dato"><strong>100%</strong><span>Mar del Plata</span></div>
+              <div class="nosotros__dato"><strong>$0</strong><span>Bolsas y retiro</span></div>
+              <div class="nosotros__dato"><strong>1 vez</strong><span>Por semana en tu zona</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CÓMO FUNCIONA ============ -->
+    <section class="seccion" id="como-funciona">
+      <div class="contenedor">
+        <div class="seccion__encabezado revelar">
+          <span class="seccion__etiqueta">Cómo funciona</span>
+          <h2>Cuatro pasos y listo</h2>
+          <p class="seccion__bajada">Sin viajes, sin trámites y sin costo. Nosotros ponemos las bolsas y la logística; vos, la separación.</p>
+        </div>
+
+        <div class="como-funciona">
+          <div class="pasos-grid">
+            <article class="paso revelar">
+              <span class="paso__numero">1</span>
+              <div>
+                <h3>Te registrás</h3>
+                <p>Elegís tu barrio en Mar del Plata y te llevamos tu primera bolsa gratis.</p>
+              </div>
+            </article>
+            <article class="paso revelar revelar--1">
+              <span class="paso__numero">2</span>
+              <div>
+                <h3>Juntás tus residuos</h3>
+                <p>Separás latas de aluminio, cobre, o plásticos PET. Cuanto más limpio, mejor se valoriza.</p>
+              </div>
+            </article>
+            <article class="paso revelar revelar--2">
+              <span class="paso__numero">3</span>
+              <div>
+                <h3>Pasamos a pesar</h3>
+                <p>El día asignado a tu zona, pesamos tus bolsas en la puerta y anotamos los kilos en tu perfil.</p>
+              </div>
+            </article>
+            <article class="paso revelar revelar--3">
+              <span class="paso__numero">4</span>
+              <div>
+                <h3>Cobrás a fin de mes</h3>
+                <p>Seguís tu acumulado en tiempo real y decidís cuándo solicitar tu transferencia bancaria o Mercado Pago.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="pasos__imagenes revelar revelar--2">
+            <img src="/img/paso-registro.jpg" width="900" height="675" loading="lazy" alt="Persona registrándose en MdP Recicla desde el celular" />
+            <img src="/img/paso-pesaje.jpg" width="900" height="675" loading="lazy" alt="Pesaje de materiales reciclables en la puerta de una casa" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRECIOS ============ -->
+    <section class="seccion seccion--alterna" id="precios">
+      <div class="contenedor">
+        <div class="seccion__encabezado revelar">
+          <span class="seccion__etiqueta">Lo que te pagamos</span>
+          <h2>Precios por kilo, claros y a la vista</h2>
+          <p class="seccion__bajada">
+            Publicamos el precio que te pagamos en la puerta de tu casa, con la logística de retiro incluida.
+          </p>
+        </div>
+
+        <div class="precios-grid">
+          <article class="precio-card revelar">
+            <div class="precio-card__envoltorio">
+              <img class="precio-card__imagen" src="/img/material-aluminio.jpg" width="800" height="600" loading="lazy" alt="Latas de aluminio aplastadas listas para reciclar" />
+            </div>
+            <div class="precio-card__cuerpo">
+              <h3 class="precio-card__nombre">Aluminio</h3>
+              <p class="precio-card__ejemplos">Latas de gaseosa y cerveza</p>
+              <p class="precio-card__valor"><strong>$1.600</strong><span>/ kg</span></p>
+              <p class="precio-card__detalle">Latas aplastadas, secas y limpias.</p>
+            </div>
+          </article>
+
+          <article class="precio-card revelar revelar--1">
+            <div class="precio-card__envoltorio">
+              <img class="precio-card__imagen" src="/img/material-plastico.jpg" width="800" height="600" loading="lazy" alt="Botellas plásticas PET compactadas" />
+            </div>
+            <div class="precio-card__cuerpo">
+              <h3 class="precio-card__nombre">Plásticos PET</h3>
+              <p class="precio-card__ejemplos">Botellas limpias</p>
+              <p class="precio-card__valor"><strong>$350</strong><span>/ kg</span></p>
+              <p class="precio-card__detalle">Botellas de bebida compactadas, sin líquido.</p>
+            </div>
+          </article>
+
+          <article class="precio-card precio-card--destacado revelar revelar--2">
+            <div class="precio-card__envoltorio">
+              <span class="precio-card__insignia">Mejor pago</span>
+              <img class="precio-card__imagen" src="/img/material-cobre.jpg" width="800" height="600" loading="lazy" alt="Cables y caños de cobre para reciclar" />
+            </div>
+            <div class="precio-card__cuerpo">
+              <h3 class="precio-card__nombre">Cobre</h3>
+              <p class="precio-card__ejemplos">Cables, cañerías y motores</p>
+              <p class="precio-card__valor"><strong>$9.600</strong><span>/ kg</span></p>
+              <p class="precio-card__detalle">Cobre limpio o cables pelados / pelos de cobre.</p>
+            </div>
+          </article>
+        </div>
+
+        <p class="nota-precios">
+          Los precios se actualizan según el mercado mayorista y se aplican al momento del pesaje. Consultanos
+          por el resto de los materiales: los recibimos y los valorizamos juntos.
+        </p>
+
+        <div class="otros-materiales revelar">
+          <img src="/img/material-carton.jpg" width="800" height="600" loading="lazy" alt="Fardos de cartón y papel para reciclar" />
+          <div class="otros-materiales__texto">
+            <h3>También pasamos a buscar</h3>
+            <p class="seccion__bajada" style="margin-bottom:0">
+              Todo suma para tu acumulado mensual. Si tenés dudas de cómo prepararlo, escribinos por WhatsApp
+              y te explicamos en dos minutos.
+            </p>
+            <ul class="otros-materiales__lista">
+              <li>Cartón</li>
+              <li>Papel blanco</li>
+              <li>Vidrio</li>
+              <li>Chatarra de hierro</li>
+              <li>Plástico duro</li>
+              <li>Bronce</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ZONAS ============ -->
+    <section class="seccion" id="zonas">
+      <div class="contenedor">
+        <div class="seccion__encabezado revelar">
+          <span class="seccion__etiqueta">Zonas y días</span>
+          <h2>¿Qué día pasamos por tu barrio?</h2>
+          <p class="seccion__bajada">
+            Recorremos Mar del Plata de lunes a sábado. Elegí un día para ver los barrios que visitamos
+            o mirá el cronograma completo.
+          </p>
+        </div>
+
+        <div class="zonas__filtros" id="zonas-filtros" role="group" aria-label="Filtrar barrios por día de recolección">
+          <button class="zonas__filtro" type="button" data-dia="todos" aria-pressed="true">Todos</button>
+        </div>
+
+        <div class="zonas__grilla" id="zonas-grilla" aria-live="polite">
+          <p class="zonas__vacio">Cargando los días de recolección…</p>
+        </div>
+
+        <p class="nota-precios">
+          ¿Tu barrio no aparece? Escribinos por WhatsApp: estamos sumando zonas nuevas cada mes.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="seccion seccion--alterna" id="faq">
+      <div class="contenedor contenedor--angosto">
+        <div class="seccion__encabezado revelar">
+          <span class="seccion__etiqueta">Preguntas frecuentes</span>
+          <h2>Las dudas que nos consultan siempre</h2>
+        </div>
+
+        <div class="faq">
+          <div class="faq__item">
+            <h3 style="margin:0">
+              <button class="faq__pregunta" type="button" aria-expanded="false" aria-controls="faq-r1" id="faq-p1">
+                ¿Tiene algún costo el servicio o la bolsa?
+                <span class="faq__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="faq-r1" role="region" aria-labelledby="faq-p1">
+              <p>No, la entrega de bolsas y el retiro a domicilio son 100% gratuitos.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3 style="margin:0">
+              <button class="faq__pregunta" type="button" aria-expanded="false" aria-controls="faq-r2" id="faq-p2">
+                ¿Hay un peso mínimo para que pasen a buscar mi bolsa?
+                <span class="faq__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="faq-r2" role="region" aria-labelledby="faq-p2">
+              <p>Recomendamos juntar al menos 2 a 3 kg para optimizar la pasada, pero pesamos todo lo que tengas listo el día correspondiente a tu zona.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3 style="margin:0">
+              <button class="faq__pregunta" type="button" aria-expanded="false" aria-controls="faq-r3" id="faq-p3">
+                ¿Cómo y cuándo cobro mi dinero?
+                <span class="faq__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="faq-r3" role="region" aria-labelledby="faq-p3">
+              <p>Podés ver tus kilos y saldo acumulado en tu panel. A fin de mes presionás el botón "Solicitar Cobro" e ingresás tu Alias o CBU para recibir la transferencia.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <h3 style="margin:0">
+              <button class="faq__pregunta" type="button" aria-expanded="false" aria-controls="faq-r4" id="faq-p4">
+                ¿Qué pasa si no estoy en mi casa el día de recolección?
+                <span class="faq__icono" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="faq__respuesta" id="faq-r4" role="region" aria-labelledby="faq-p4">
+              <p>Podés dejar la bolsa identificada en la puerta o coordinar previamente desde tu panel o por WhatsApp.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA FINAL ============ -->
+    <section class="cta-final">
+      <picture class="cta-final__media">
+        <source type="image/webp" srcset="/img/ciudad.webp" />
+        <img class="cta-final__fondo" src="/img/ciudad.jpg" width="1400" height="788" loading="lazy" alt="" />
+      </picture>
+      <div class="cta-final__contenido contenedor">
+        <h2>Empezá a reciclar y a cobrar por hacerlo</h2>
+        <p>Creás tu cuenta, elegís tu barrio y te llevamos la primera bolsa. Sin contratos ni costos ocultos.</p>
+        <div class="cta-final__acciones">
+          <button class="boton boton--dorado boton--grande" type="button" data-abrir-modal="registro">Crear mi cuenta gratis</button>
+          <a class="boton boton--fantasma boton--grande" data-whatsapp href="https://wa.me/5492235550000?text=%C2%A1Hola%20MdP%20Recicla!%20Quisiera%20hacer%20una%20consulta%20sobre%20la%20recolecci%C3%B3n%20en%20mi%20barrio." target="_blank" rel="noopener">
+            Consultar por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="contenedor">
-    <p class="texto-chico" style="text-align:center">MdP Recicla · Mar del Plata, Argentina</p>
+  <!-- ============ FOOTER ============ -->
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__grilla">
+        <div>
+          <span class="marca" style="margin-bottom:.6rem">
+            <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+              <rect width="48" height="48" rx="13" fill="#43A047" />
+              <path d="M33.6 13.6c-9.4 1-14.8 5.7-16.3 13-.4 2.1-.4 3.7-.2 4.7 1.7.2 3.6.1 5.6-.3 7.3-1.5 11.3-7 11.9-16.4.05-.9-.2-1.1-1-1z" fill="#fff" />
+              <path d="M14.6 34.4c2.4-5.2 5.7-9.2 10.6-12.1" fill="none" stroke="#1B5E20" stroke-width="2.1" stroke-linecap="round" />
+              <circle cx="35" cy="34.5" r="6.6" fill="#FBC02D" />
+              <text x="35" y="38.4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#5D4037">$</text>
+            </svg>
+            <span>MdP Recicla<span class="marca__texto-chico">Mar del Plata</span></span>
+          </span>
+          <p style="font-size:.9rem;max-width:34ch">
+            Recolección domiciliaria de reciclables con recompensa económica. Cuidamos la ciudad entre todos.
+          </p>
+        </div>
+
+        <div>
+          <h3>Servicio</h3>
+          <ul>
+            <li><a href="#como-funciona">Cómo funciona</a></li>
+            <li><a href="#precios">Precios por kilo</a></li>
+            <li><a href="#zonas">Zonas y días</a></li>
+            <li><a href="#faq">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Acceso</h3>
+          <ul>
+            <li><button type="button" data-abrir-modal="login" class="enlace-boton">Ingresar a mi panel</button></li>
+            <li><button type="button" data-abrir-modal="registro" class="enlace-boton">Crear una cuenta</button></li>
+            <li><a href="/login.html">Acceso administradores</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Contacto</h3>
+          <ul>
+            <li><a data-whatsapp href="https://wa.me/5492235550000?text=%C2%A1Hola%20MdP%20Recicla!%20Quisiera%20hacer%20una%20consulta%20sobre%20la%20recolecci%C3%B3n%20en%20mi%20barrio." target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="mailto:hola@mdprecicla.com.ar">hola@mdprecicla.com.ar</a></li>
+            <li>Mar del Plata, Buenos Aires</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__legal">
+        <span>© <span id="anio">2026</span> MdP Recicla. Todos los derechos reservados.</span>
+        <span>Hecho con 💚 en Mar del Plata, Argentina.</span>
+      </div>
+    </div>
   </footer>
 
-  <script type="module">
-    import { api, money, escapar } from '/assets/js/api.js';
+  <!-- ============ WHATSAPP FLOTANTE ============ -->
+  <a class="whatsapp" data-whatsapp href="https://wa.me/5492235550000?text=%C2%A1Hola%20MdP%20Recicla!%20Quisiera%20hacer%20una%20consulta%20sobre%20la%20recolecci%C3%B3n%20en%20mi%20barrio." target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+    <span class="whatsapp__texto">¿Consultas? Escribinos</span>
+    <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
+      <path d="M16.04 3C9.4 3 4 8.4 4 15.04c0 2.12.55 4.19 1.6 6.01L4 29l8.14-1.55a12 12 0 0 0 3.9.65h.01C22.68 28.1 28.08 22.7 28.08 16.06 28.08 8.4 22.68 3 16.04 3Zm0 21.9h-.01a9.9 9.9 0 0 1-5.05-1.38l-.36-.22-3.76.72.72-3.67-.24-.38a9.86 9.86 0 0 1-1.51-5.27c0-5.46 4.45-9.9 9.92-9.9 2.65 0 5.13 1.03 7 2.9a9.83 9.83 0 0 1 2.9 7c0 5.47-4.45 9.9-9.91 9.9Zm5.44-7.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.68-1.62-.93-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.03 1.01-1.03 2.46s1.06 2.85 1.2 3.05c.15.2 2.08 3.18 5.04 4.46.7.3 1.25.48 1.68.62.71.22 1.35.19 1.86.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.42-.08-.12-.28-.2-.58-.35Z" />
+    </svg>
+  </a>
 
-    try {
-      const { items } = await api.get('/materials');
-      const contenedor = document.getElementById('materiales');
-      if (!items?.length) {
-        contenedor.innerHTML = '<p class="vacio">Todavía no hay materiales cargados.</p>';
-      } else {
-        const porCategoria = items.reduce((acc, m) => {
-          (acc[m.category ?? 'Otros'] ??= []).push(m);
-          return acc;
-        }, {});
-        contenedor.className = '';
-        contenedor.innerHTML = Object.entries(porCategoria).map(([categoria, lista]) => `
-          <h3 style="margin-top:.75rem">${escapar(categoria)}</h3>
-          <ul class="lista">
-            ${lista.map((m) => `
-              <li>
-                <span class="lista__principal">${escapar(m.name)}</span>
-                <span><strong>${money(m.price_per_kg)}</strong> <span class="texto-chico">/ ${escapar(m.unit)}</span></span>
-              </li>`).join('')}
-          </ul>`).join('');
-      }
-    } catch {
-      document.getElementById('materiales').textContent = 'No se pudieron cargar los materiales.';
-    }
-  </script>
+  <!-- ============ MODAL DE ACCESO ============ -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" hidden>
+    <div class="modal__fondo" data-cerrar-modal></div>
+    <div class="modal__caja">
+      <button class="modal__cerrar" type="button" data-cerrar-modal aria-label="Cerrar">×</button>
+      <h2 class="modal__titulo" id="modal-titulo">Tu cuenta de MdP Recicla</h2>
+      <p class="texto-chico" id="modal-bajada">Ingresá para ver tus kilos y tu saldo, o creá tu cuenta en un minuto.</p>
+
+      <div class="modal__tabs" role="tablist">
+        <button class="modal__tab" type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login" data-tab="login">Ingresar</button>
+        <button class="modal__tab" type="button" role="tab" id="tab-registro" aria-selected="false" aria-controls="panel-registro" data-tab="registro">Registrarme</button>
+      </div>
+
+      <div class="aviso" id="modal-aviso" role="status"></div>
+
+      <!-- Ingresar -->
+      <div class="modal__panel modal__panel--activo" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+        <form id="form-login" novalidate>
+          <div class="campo">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" name="email" autocomplete="email" required placeholder="tu@email.com" />
+          </div>
+          <div class="campo">
+            <label for="login-password">Contraseña</label>
+            <input type="password" id="login-password" name="password" autocomplete="current-password" required placeholder="••••••••" />
+          </div>
+          <button type="submit" class="boton boton--bloque" id="btn-login">Ingresar a mi panel</button>
+        </form>
+        <p class="modal__nota">¿Problemas para entrar? <a data-whatsapp href="https://wa.me/5492235550000" target="_blank" rel="noopener">Escribinos por WhatsApp</a>.</p>
+      </div>
+
+      <!-- Registrarme -->
+      <div class="modal__panel" id="panel-registro" role="tabpanel" aria-labelledby="tab-registro">
+        <form id="form-registro" novalidate>
+          <div class="campo">
+            <label for="reg-nombre">Nombre y apellido</label>
+            <input type="text" id="reg-nombre" name="name" autocomplete="name" required placeholder="Juan Pérez" />
+          </div>
+          <div class="fila fila--2">
+            <div class="campo">
+              <label for="reg-email">Email</label>
+              <input type="email" id="reg-email" name="email" autocomplete="email" required placeholder="tu@email.com" />
+            </div>
+            <div class="campo">
+              <label for="reg-telefono">Teléfono</label>
+              <input type="tel" id="reg-telefono" name="phone" autocomplete="tel" placeholder="223 555-0000" />
+            </div>
+          </div>
+          <div class="campo">
+            <label for="reg-direccion">Dirección (calle y número)</label>
+            <input type="text" id="reg-direccion" name="address" autocomplete="street-address" placeholder="Belgrano 2345" />
+          </div>
+          <div class="campo">
+            <label for="reg-barrio">Barrio</label>
+            <select id="reg-barrio" name="neighborhood_id" required>
+              <option value="">Cargando barrios…</option>
+            </select>
+            <div class="campo__ayuda" id="reg-ayuda-barrio">Elegí tu barrio y te confirmamos el día de recolección.</div>
+          </div>
+          <div class="campo">
+            <label for="reg-password">Contraseña</label>
+            <input type="password" id="reg-password" name="password" autocomplete="new-password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+          </div>
+          <button type="submit" class="boton boton--bloque" id="btn-registro">Crear mi cuenta y pedir mi bolsa</button>
+          <p class="modal__nota">Al crear tu cuenta aceptás que te contactemos para coordinar la entrega de bolsas y el recorrido de tu zona.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/assets/js/landing.js"></script>
 </body>
 </html>
