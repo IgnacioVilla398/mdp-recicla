@@ -9,7 +9,7 @@ const app = createApp();
 
 app.listen(config.port, () => {
   console.log('----------------------------------------------------');
-  console.log('  MdP Recicla - API (Paso 1: esquema de base de datos)');
+  console.log('  MdP Recicla - API (Pasos 1-2: esquema + auth y pesajes)');
   console.log(`  Entorno : ${config.env}`);
   console.log(`  URL     : http://localhost:${config.port}`);
   console.log(`  Salud   : http://localhost:${config.port}/api/health`);

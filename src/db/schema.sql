@@ -209,17 +209,9 @@ GROUP BY c.user_id, c.material_id;
 -- 9. TRIGGERS
 -- ------------------------------------------------------------
 
--- Al cambiar el precio de un material se escribe el historial
-DROP TRIGGER IF EXISTS trg_materials_price_history;
-CREATE TRIGGER trg_materials_price_history
-AFTER UPDATE OF price_per_kg ON materials
-FOR EACH ROW
-WHEN NEW.price_per_kg <> OLD.price_per_kg
-BEGIN
-  INSERT INTO material_price_history (material_id, price_per_kg, valid_from, note)
-  VALUES (NEW.id, NEW.price_per_kg,
-          strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), 'Cambio de precio automatico');
-END;
+-- NOTA: el historial de precios (material_price_history) lo escribe la capa de
+-- servicios (src/services/materials.service.js) para poder registrar quien
+-- hizo el cambio (changed_by) y una nota. Ver docs/02-api.md.
 
 -- Mantener updated_at al dia
 DROP TRIGGER IF EXISTS trg_users_updated_at;
