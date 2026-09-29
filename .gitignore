@@ -9,7 +9,7 @@ db/*.sqlite-shm
 .DS_Store
 Thumbs.db
 
-# Imagenes originales sin optimizar (50 MB).
+# Imagenes originales sin optimizar (50 MB), solo en la raiz del proyecto.
 # Las versiones que sirve el sitio se generan con scripts/optimizar-imagenes.py
-# y se versionan en public/img/.
-img/
+# y SI se versionan en public/img/.
+/img/
