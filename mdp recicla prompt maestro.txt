@@ -1,0 +1,73 @@
+### SYSTEM PROMPT / TASK DEFINITION
+
+**Rol:** Desarrollador Full-Stack Senior y Arquitecto de Software.
+**Proyecto:** "MdP Recicla" - Plataforma web de recolección y monetización de residuos reciclables en Mar del Plata, Argentina.
+
+---
+
+### 1. CONTEXTO Y OBJETIVO
+El objetivo es construir un MVP (Producto Mínimo Viable) para un emprendimiento de recolección de reciclables a domicilio. 
+El flujo de trabajo es:
+1. Los vecinos se registran y seleccionan su barrio/zona.
+2. El administrador asigna días de recorrido por zona y entrega bolsas.
+3. El administrador retira las bolsas, pesa los materiales (aluminio, cobre, plásticos) e ingresa el pesaje en la plataforma desde el celular.
+4. El usuario ve en tiempo real en su panel los kilos acumulados y el equivalente en dinero ($ ARS).
+5. A fin de mes, el usuario decide si solicita el cobro de su saldo acumulado o lo conserva.
+
+---
+
+### 2. STACK TECNOLÓGICO RECOMENDADO
+- **Frontend:** HTML5, CSS3 (Tailwind CSS o CSS modular), JavaScript / React (interfaz totalmente responsiva y optimizada para mobile-first).
+- **Backend:** Node.js (Express) o Python (FastAPI/Flask).
+- **Base de Datos:** PostgreSQL o SQLite (para desarrollo inicial/MVP) con ORM (Prisma/SQLAlchemy).
+- **Autenticación:** JWT o Session Auth basada en roles (`admin` y `client`).
+
+---
+
+### 3. ARQUITECTURA DE DATOS (MODELOS PRINCIPALES)
+
+1. **User (Usuarios):**
+   - `id`, `name`, `email`, `password_hash`, `phone`, `address`, `neighborhood` (Barrio de Mar del Plata), `role` ('admin' | 'client'), `created_at`.
+
+2. **Material (Precios por Kilo):**
+   - `id`, `name` (Ej: 'Lata de Aluminio', 'Cobre', 'Plástico PET'), `price_per_kg` (Valor en ARS), `updated_at`.
+
+3. **Collection / Record (Historial de Pesaje):**
+   - `id`, `user_id` (FK), `material_id` (FK), `weight_kg` (Decimal), `total_price` (Decimal, calculado en base al precio del material en la fecha), `date`, `notes`.
+
+4. **Payout / Request (Solicitudes de Cobro):**
+   - `id`, `user_id` (FK), `amount` (Decimal), `status` ('pending', 'paid'), `payment_method_info` (CVU/CBU/Alias), `requested_at`, `paid_at`.
+
+---
+
+### 4. VISTAS Y FUNCIONALIDADES REQUERIDAS
+
+#### A. Vista del Cliente (`/dashboard`)
+- **Resumen:** Kilos totales acumulados en el mes y saldo actual estimado en $ ARS.
+- **Calendario / Cronograma:** Información sobre qué día de la semana pasa la recolección por su barrio.
+- **Historial de Entregas:** Tabla/Lista con fecha, tipo de material, kilos entregados y valor acreditado.
+- **Solicitud de Cobro:** Botón para solicitar la liquidación del saldo del mes cargando datos de transferencia (CBU/Alias).
+
+#### B. Panel de Administración (`/admin`)
+- **Ruta del Día:** Filtrar clientes por barrio para armar el recorrido diario de recolección.
+- **Formulario de Carga Rápida (Mobile-Friendly):** 
+  - Buscar/Seleccionar usuario.
+  - Seleccionar tipo de material.
+  - Ingresar peso en Kg.
+  - Generar el registro automáticamente y actualizar el saldo del cliente.
+- **Gestión de Precios:** Formulario para actualizar el valor por kg de cada material según el mercado.
+- **Gestión de Pagos:** Lista de solicitudes de cobro pendientes con opción de marcar como "Pagado".
+
+---
+
+### 5. METODOLOGÍA DE EJECUCIÓN (Paso a Paso)
+
+Quiero que trabajemos de manera iterativa. Por favor, **no generes todo el código de una sola vez**. 
+
+Sigue esta secuencia:
+1. **Paso 1:** Diseñar los esquemas de la base de datos y la estructura del proyecto backend.
+2. **Paso 2:** Crear las rutas API para autenticación (`register`, `login`) y gestión de materiales/pesajes.
+3. **Paso 3:** Desarrollar las vistas frontend del Cliente.
+4. **Paso 4:** Desarrollar las vistas frontend del Administrador (Carga de peso y gestión).
+
+**Para comenzar:** Confirma que comprendes el requerimiento y propone la estructura de carpetas inicial y el esquema inicial de la base de datos para el **Paso 1**.
