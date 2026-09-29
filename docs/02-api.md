@@ -60,6 +60,26 @@ Errores: `400` datos inválidos · `401` sin token o token vencido · `403` rol 
 | GET | `/routes/daily?weekday=2&date=YYYY-MM-DD` | admin | **Ruta del día**: barrios y vecinos a visitar, con bolsas entregadas y última recolección |
 | GET | `/routes/week` | admin | Cronograma semanal con cantidad de vecinos por día |
 
+### Solicitudes de cobro (`/api/payouts`)
+
+| Método | Ruta | Rol | Descripción |
+| --- | --- | --- | --- |
+| GET | `/payouts/config` | autenticado | Monto mínimo para solicitar un cobro |
+| GET | `/payouts` | autenticado | El vecino ve las propias; el admin filtra por `status`, `user_id`, `from`, `to` |
+| GET | `/payouts/overview` | admin | Pendientes + historial reciente + totales pagados |
+| POST | `/payouts` | client | Solicita el cobro. Body: `amount?` (por defecto el saldo disponible), `payout_method`, `payout_value`, `payout_holder`, `period_month?` |
+| GET | `/payouts/:id` | autenticado | Detalle (el vecino solo las propias) |
+| POST | `/payouts/:id/cancel` | client | Cancela una solicitud propia **pendiente** y libera el saldo |
+| PATCH | `/payouts/:id` | admin | `{ "action": "approve" \| "reject" \| "pay" }` + `admin_notes?`, `receipt_url?` |
+
+### Entrega de bolsas (`/api/bags`)
+
+| Método | Ruta | Rol | Descripción |
+| --- | --- | --- | --- |
+| GET | `/bags/summary/me` | client | Bolsas de los últimos 30 días, total y última entrega |
+| GET | `/bags` | autenticado | Historial de entregas (`user_id`, `neighborhood_id`, `from`, `to`, `limit`) |
+| POST | `/bags` | admin | Registra la entrega: `user_id`, `quantity`, `delivered_on?`, `notes?` |
+
 ## Reglas de negocio implementadas
 
 1. **Precio histórico congelado**: al cargar un pesaje se busca el último precio registrado en `material_price_history` con `valid_from <= fecha del pesaje`. Si no hay historial, se usa el precio actual. El pesaje guarda `price_per_kg_applied` y `total_price = weight_kg × precio`, de modo que actualizar precios no altera meses ya liquidados.
@@ -67,6 +87,8 @@ Errores: `400` datos inválidos · `401` sin token o token vencido · `403` rol 
 3. **Validaciones de pesaje**: peso numérico > 0 y ≤ 5000 kg, material activo, vecino existente con rol `client`, fecha en formato `YYYY-MM-DD` y nunca futura.
 4. **Aislamiento por rol**: un vecino nunca ve datos de otro; las rutas de administración exigen rol `admin` (verificado contra la base en cada request, no solo contra el token).
 5. **Saldos**: `available_balance` descuenta pagos confirmados y solicitudes pendientes (`v_user_totals`), para evitar solicitar dos veces el mismo saldo.
+6. **Solicitud de cobro**: solo una pendiente por vecino (si ya hay una, `409`); el monto no puede superar el saldo disponible ni ser menor al mínimo (`MIN_PAYOUT_AMOUNT`, por defecto $ 2.000); el alias se valida con formato y el CBU/CVU debe tener 22 dígitos. Al crear la solicitud, los datos de cobro quedan guardados en el perfil.
+7. **Entrega de bolsas**: cantidad entera entre 1 y 200, fecha no futura; el historial es de solo lectura (no se elimina, se corrige con nota).
 
 ## Ejemplos
 
@@ -98,10 +120,13 @@ Con el servidor levantado (`npm start`), en otra terminal:
 npm run test:api
 ```
 
-[`scripts/smoke.mjs`](../scripts/smoke.mjs) recorre el flujo completo: registro, login, control de roles, actualización de precios, carga de pesajes, cálculo del saldo, ruta del día y validaciones de error. **26 pruebas, 0 fallidas.**
+[`scripts/smoke.mjs`](../scripts/smoke.mjs) recorre el flujo completo: registro, login, control de roles, actualización de precios, carga de pesajes, cálculo del saldo, solicitud y pago de cobros, entrega de bolsas, ruta del día, validaciones de error y servido de las páginas del frontend. **53 pruebas, 0 fallidas.**
 
-## Pendiente para los Pasos 3 y 4
+## Siguiente paso
 
-- Endpoints de solicitud de cobro (`POST /api/payouts`, `GET /api/payouts`, `PATCH /api/payouts/:id` → marcar como pagado). El modelo `payouts` y `v_user_totals` ya lo soportan.
-- Registro de entrega de bolsas (`bag_deliveries`) desde el panel admin.
+El **Paso 3** (vistas del cliente) está documentado en [`03-frontend-cliente.md`](03-frontend-cliente.md). Queda el **Paso 4**: panel de administración (`/admin`), cuyos endpoints ya están disponibles.
+
+Pendientes técnicos para producción:
+
 - Rate limiting en `login`/`register` y rotación de `JWT_SECRET`.
+- Los datos de cobro se guardan en texto plano (CBU/alias no son secretos, pero conviene cifrarlos en reposo).

@@ -3,30 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MdP Recicla</title>
-  <style>
-    :root { color-scheme: light dark; }
-    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 2rem; line-height: 1.6; }
-    main { max-width: 720px; margin: 0 auto; }
-    h1 { margin-bottom: .25rem; }
-    .tag { display: inline-block; background: #16a34a; color: #fff; border-radius: 999px; padding: .1rem .7rem; font-size: .8rem; }
-    code { background: rgba(127,127,127,.18); padding: .1rem .35rem; border-radius: 4px; }
-    ul { padding-left: 1.2rem; }
-  </style>
+  <title>MdP Recicla — Reciclá y ganá</title>
+  <meta name="description" content="Recolección de reciclables a domicilio en Mar del Plata. Separá, entregá y cobrá por tus kilos." />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
 </head>
 <body>
+  <header class="barra">
+    <div class="barra__interior">
+      <a class="marca" href="/"><span class="marca__icono">♻</span> MdP Recicla</a>
+      <nav class="barra__usuario">
+        <a class="boton boton--secundario boton--chico" href="/login.html">Ingresar</a>
+        <a class="boton boton--chico" href="/registro.html">Crear cuenta</a>
+      </nav>
+    </div>
+  </header>
+
   <main>
-    <span class="tag">Pasos 1 y 2 completados</span>
-    <h1>MdP Recicla</h1>
-    <p>Plataforma de recolección y monetización de residuos reciclables en Mar del Plata.</p>
-    <p>La API está en marcha con el esquema de base de datos y la autenticación listos. Verificá:</p>
-    <ul>
-      <li><a href="/api/health">/api/health</a> — estado del servicio</li>
-      <li><a href="/api/db/status">/api/db/status</a> — conteo de registros por tabla</li>
-      <li><a href="/api/materials">/api/materials</a> — materiales y precio por kilo</li>
-      <li><a href="/api/neighborhoods">/api/neighborhoods</a> — barrios y días de recolección</li>
-    </ul>
-    <p>Las vistas de cliente (Paso 3) y administrador (Paso 4) se construyen a continuación.</p>
+    <div class="contenedor">
+      <section class="hero">
+        <h1>Reciclá en casa y cobrá por tus kilos</h1>
+        <p>
+          Pasamos por tu barrio con bolsas, retiramos tus reciclables, los pesamos y te acreditamos
+          el valor en pesos. Vos decidís si cobrás el saldo a fin de mes o lo seguís acumulando.
+        </p>
+        <div class="hero__acciones">
+          <a class="boton boton--bloque" href="/registro.html">Quiero sumarme</a>
+          <a class="boton boton--secundario boton--bloque" href="/login.html">Ya tengo cuenta</a>
+        </div>
+      </section>
+
+      <div class="grilla grilla--2">
+        <section class="tarjeta">
+          <div class="tarjeta__titulo"><h2>Cómo funciona</h2></div>
+          <ol class="pasos">
+            <li><div><strong>Te registrás y elegís tu barrio.</strong><div class="texto-chico">Te asignamos el día de recorrido de tu zona.</div></div></li>
+            <li><div><strong>Recibís las bolsas.</strong><div class="texto-chico">El equipo las entrega en tu domicilio.</div></div></li>
+            <li><div><strong>Retiramos y pesamos.</strong><div class="texto-chico">Aluminio, cobre, plásticos, cartón y más.</div></div></li>
+            <li><div><strong>Ves tu saldo en el panel.</strong><div class="texto-chico">Kilos y pesos actualizados en el momento.</div></div></li>
+            <li><div><strong>Cobrás cuando quieras.</strong><div class="texto-chico">Solicitás la transferencia por CBU, CVU o alias.</div></div></li>
+          </ol>
+        </section>
+
+        <section class="tarjeta">
+          <div class="tarjeta__titulo">
+            <h2>Materiales que recibimos</h2>
+            <span class="etiqueta etiqueta--ok">Precio por kg</span>
+          </div>
+          <div id="materiales" class="cargando">Cargando materiales…</div>
+          <p class="texto-chico" style="margin-top:.75rem">
+            Los precios se actualizan según el mercado y se aplican al momento del pesaje.
+          </p>
+        </section>
+      </div>
+    </div>
   </main>
+
+  <footer class="contenedor">
+    <p class="texto-chico" style="text-align:center">MdP Recicla · Mar del Plata, Argentina</p>
+  </footer>
+
+  <script type="module">
+    import { api, money, escapar } from '/assets/js/api.js';
+
+    try {
+      const { items } = await api.get('/materials');
+      const contenedor = document.getElementById('materiales');
+      if (!items?.length) {
+        contenedor.innerHTML = '<p class="vacio">Todavía no hay materiales cargados.</p>';
+      } else {
+        const porCategoria = items.reduce((acc, m) => {
+          (acc[m.category ?? 'Otros'] ??= []).push(m);
+          return acc;
+        }, {});
+        contenedor.className = '';
+        contenedor.innerHTML = Object.entries(porCategoria).map(([categoria, lista]) => `
+          <h3 style="margin-top:.75rem">${escapar(categoria)}</h3>
+          <ul class="lista">
+            ${lista.map((m) => `
+              <li>
+                <span class="lista__principal">${escapar(m.name)}</span>
+                <span><strong>${money(m.price_per_kg)}</strong> <span class="texto-chico">/ ${escapar(m.unit)}</span></span>
+              </li>`).join('')}
+          </ul>`).join('');
+      }
+    } catch {
+      document.getElementById('materiales').textContent = 'No se pudieron cargar los materiales.';
+    }
+  </script>
 </body>
 </html>

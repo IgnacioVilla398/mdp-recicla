@@ -2,7 +2,7 @@
 
 Plataforma web de recolección y monetización de residuos reciclables en Mar del Plata, Argentina.
 
-**Estado: Pasos 1 y 2 completados** — esquema de base de datos + API de autenticación, materiales y pesajes funcionando y verificada con 26 pruebas automáticas.
+**Estado: Pasos 1, 2 y 3 completados** — base de datos, API completa (auth, materiales, pesajes, cobros y bolsas) y panel del cliente funcionando, con 53 pruebas automáticas en verde.
 
 ---
 
@@ -36,7 +36,16 @@ Scripts disponibles:
 | `npm run db:seed` | Carga datos de prueba si la base está vacía |
 | `npm run db:seed -- --force` | Borra los datos del MVP y recarga |
 | `npm run db:reset` | Reconstruye la base desde cero |
-| `npm run test:api` | Prueba end-to-end de la API (26 verificaciones) |
+| `npm run test:api` | Prueba end-to-end de la API (53 verificaciones) |
+
+### Páginas
+
+| Ruta | Descripción |
+| --- | --- |
+| `/` | Landing con precios por kilo en vivo |
+| `/login.html` · `/registro.html` | Ingreso y alta de vecino |
+| `/dashboard.html` | **Panel del cliente** (Paso 3) |
+| `/admin.html` | Panel de administración (Paso 4 — placeholder por ahora) |
 
 ### Usuarios demo
 
@@ -56,7 +65,10 @@ Scripts disponibles:
 | PATCH | `/api/materials/:id` · `/api/materials/:id/history` | admin |
 | POST | `/api/collections` · `/api/collections/batch` | admin (carga de pesajes) |
 | GET | `/api/collections/summary/me` | vecino |
-| GET | `/api/collections/overview` · `/api/users` · `/api/routes/daily` | admin |
+| POST | `/api/payouts` · `/api/payouts/:id/cancel` | vecino (solicitud de cobro) |
+| PATCH | `/api/payouts/:id` | admin (aprobar / rechazar / pagar) |
+| GET | `/api/collections/overview` · `/api/users` · `/api/routes/daily` · `/api/payouts/overview` | admin |
+| POST | `/api/bags` | admin (entrega de bolsas) |
 
 Referencia completa con ejemplos `curl` y reglas de negocio: [`docs/02-api.md`](docs/02-api.md).
 
@@ -71,11 +83,22 @@ mdp-recicla/
 ├── db/                        # archivo SQLite (generado, en .gitignore)
 ├── docs/
 │   ├── 01-esquema-bd.md       # diseño de datos (Paso 1)
-│   └── 02-api.md              # referencia de la API (Paso 2)
+│   ├── 02-api.md              # referencia de la API (Paso 2)
+│   ├── 03-frontend-cliente.md # vistas del cliente (Paso 3)
+│   └── capturas/              # pantallas renderizadas
 ├── scripts/
 │   └── smoke.mjs              # prueba end-to-end de la API
-├── public/                    # frontend estático (Pasos 3 y 4)
-│   └── index.html
+├── public/                    # frontend (Pasos 3 y 4)
+│   ├── index.html             # landing
+│   ├── login.html             # ingreso
+│   ├── registro.html          # alta de vecino
+│   ├── dashboard.html         # panel del cliente
+│   ├── admin.html             # panel admin (Paso 4)
+│   └── assets/
+│       ├── css/styles.css     # sistema de diseño mobile-first
+│       └── js/
+│           ├── api.js         # cliente HTTP, formato y guardas de sesión
+│           └── dashboard.js   # render del panel del cliente
 └── src/
     ├── server.js              # arranque del servidor HTTP
     ├── app.js                 # app Express, middlewares y montaje de rutas
@@ -95,12 +118,16 @@ mdp-recicla/
     │   ├── auth.routes.js     # register, login, perfil
     │   ├── materials.routes.js# materiales, precios, historial
     │   ├── collections.routes.js # pesajes, resúmenes, métricas
+    │   ├── payouts.routes.js  # solicitudes de cobro
+    │   ├── bags.routes.js     # entrega de bolsas
     │   └── users.routes.js    # vecinos, barrios, ruta del día
     ├── services/
     │   ├── auth.service.js
     │   ├── users.service.js
     │   ├── materials.service.js
-    │   └── collections.service.js
+    │   ├── collections.service.js
+    │   ├── payouts.service.js
+    │   └── bags.service.js
     └── utils/
         ├── jwt.js             # JWT HS256 con node:crypto
         ├── password.js        # hash/verify con scrypt
@@ -127,5 +154,5 @@ Decisiones clave ya implementadas:
 
 - [x] **Paso 1** — Esquema de base de datos y estructura del backend
 - [x] **Paso 2** — API de autenticación (`register`, `login`) y gestión de materiales/pesajes
-- [ ] **Paso 3** — Vistas frontend del cliente (`/dashboard`): resumen, cronograma, historial, solicitud de cobro
+- [x] **Paso 3** — Vistas frontend del cliente (`/dashboard`): resumen, cronograma, historial y solicitud de cobro
 - [ ] **Paso 4** — Vistas frontend del administrador (`/admin`): ruta del día, carga rápida de peso, precios y pagos

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi panel — MdP Recicla</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
+</head>
+<body>
+  <header class="barra">
+    <div class="barra__interior">
+      <a class="marca" href="/dashboard.html"><span class="marca__icono">♻</span> MdP Recicla</a>
+      <div class="barra__usuario">
+        <span id="nombre-usuario">Cargando…</span>
+        <button class="boton boton--secundario boton--chico" data-salir>Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <div id="aviso" class="aviso" role="status"></div>
+
+    <div class="tarjeta__titulo" style="margin-bottom:1rem">
+      <div>
+        <h1 id="saludo" style="margin:0">Hola 👋</h1>
+        <p class="texto-chico" id="datos-vecino" style="margin:0"></p>
+      </div>
+      <div class="campo" style="margin:0;min-width:180px">
+        <label for="mes" class="texto-chico">Mes</label>
+        <input type="month" id="mes" name="mes" />
+      </div>
+    </div>
+
+    <section class="grilla grilla--4" id="metricas">
+      <div class="tarjeta"><div class="cargando">…</div></div>
+    </section>
+
+    <div class="grilla grilla--2" style="margin-top:1rem">
+      <section class="tarjeta">
+        <div class="tarjeta__titulo">
+          <h2>Día de recolección</h2>
+          <span class="etiqueta etiqueta--ok" id="etiqueta-dia">—</span>
+        </div>
+        <p class="texto-chico" id="texto-cronograma">Cargando cronograma…</p>
+        <div class="calendario" id="calendario"></div>
+        <div class="leyenda">
+          <span class="leyenda--recorrido">Día de recorrido en tu barrio</span>
+          <span>Hoy</span>
+        </div>
+        <div class="separador"></div>
+        <ul class="lista" id="bolsas"></ul>
+      </section>
+
+      <section class="tarjeta">
+        <div class="tarjeta__titulo">
+          <h2>Solicitar el cobro</h2>
+          <span class="etiqueta" id="etiqueta-minimo">—</span>
+        </div>
+        <p class="texto-chico" id="texto-cobro">Cargando…</p>
+
+        <form id="form-cobro" novalidate>
+          <div class="fila fila--2">
+            <div class="campo">
+              <label for="amount">Monto a cobrar (ARS)</label>
+              <input type="number" id="amount" name="amount" min="1" step="0.01" inputmode="decimal" />
+            </div>
+            <div class="campo">
+              <label for="payout_method">Medio</label>
+              <select id="payout_method" name="payout_method">
+                <option value="alias">Alias</option>
+                <option value="cbu">CBU</option>
+                <option value="cvu">CVU</option>
+              </select>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="payout_value">Alias / CBU / CVU</label>
+            <input type="text" id="payout_value" name="payout_value" placeholder="mi.alias.mp" />
+          </div>
+          <div class="campo">
+            <label for="payout_holder">Titular de la cuenta</label>
+            <input type="text" id="payout_holder" name="payout_holder" placeholder="Nombre del titular" />
+          </div>
+          <button type="submit" class="boton boton--bloque" id="btn-cobro" disabled>Enviar solicitud</button>
+        </form>
+
+        <div class="separador"></div>
+        <h3>Mis solicitudes</h3>
+        <ul class="lista" id="lista-cobros"><li><span class="texto-chico">Cargando…</span></li></ul>
+      </section>
+    </div>
+
+    <section class="tarjeta" style="margin-top:1rem">
+      <div class="tarjeta__titulo">
+        <h2>Historial de entregas</h2>
+        <span class="texto-chico" id="resumen-historial"></span>
+      </div>
+      <div class="tabla-envoltorio">
+        <table class="tabla" id="tabla-historial">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Material</th>
+              <th class="num">Kilos</th>
+              <th class="num">$/kg</th>
+              <th class="num">Acreditado</th>
+            </tr>
+          </thead>
+          <tbody><tr><td colspan="5" class="cargando">Cargando historial…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tarjeta" style="margin-top:1rem">
+      <div class="tarjeta__titulo"><h2>Mis kilos por material</h2></div>
+      <div id="por-material" class="cargando">Cargando…</div>
+    </section>
+  </main>
+
+  <footer class="contenedor">
+    <p class="texto-chico" style="text-align:center">MdP Recicla · Mar del Plata, Argentina</p>
+  </footer>
+
+  <script type="module" src="/assets/js/dashboard.js"></script>
+</body>
+</html>

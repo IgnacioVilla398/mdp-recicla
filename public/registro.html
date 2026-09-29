@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear cuenta — MdP Recicla</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
+</head>
+<body class="auth">
+  <div class="auth__caja">
+    <div class="auth__marca">
+      <a class="marca" href="/"><span class="marca__icono">♻</span> MdP Recicla</a>
+      <p class="texto-chico" style="margin-top:.4rem">Creá tu cuenta de vecino en un minuto</p>
+    </div>
+
+    <div class="tarjeta">
+      <div id="aviso" class="aviso" role="status"></div>
+      <form id="form-registro" novalidate>
+        <div class="campo">
+          <label for="name">Nombre y apellido</label>
+          <input type="text" id="name" name="name" autocomplete="name" required placeholder="Juan Pérez" />
+        </div>
+        <div class="campo">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" required placeholder="tu@email.com" />
+        </div>
+        <div class="fila fila--2">
+          <div class="campo">
+            <label for="phone">Teléfono</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="223 555-0000" />
+          </div>
+          <div class="campo">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+          </div>
+        </div>
+        <div class="campo">
+          <label for="address">Dirección (calle y número)</label>
+          <input type="text" id="address" name="address" autocomplete="street-address" placeholder="Belgrano 2345" />
+        </div>
+        <div class="campo">
+          <label for="neighborhood_id">Barrio</label>
+          <select id="neighborhood_id" name="neighborhood_id" required>
+            <option value="">Cargando barrios…</option>
+          </select>
+          <div class="campo__ayuda" id="ayuda-barrio">Elegí tu barrio para conocer el día de recolección.</div>
+        </div>
+        <button type="submit" class="boton boton--bloque" id="btn-registro">Crear mi cuenta</button>
+      </form>
+    </div>
+
+    <p class="auth__pie">¿Ya tenés cuenta? <a href="/login.html">Ingresá</a></p>
+  </div>
+
+  <script type="module">
+    import { api, session, mostrarAviso, pintarErrores, ponerCargando, ApiError } from '/assets/js/api.js';
+
+    const form = document.getElementById('form-registro');
+    const aviso = document.getElementById('aviso');
+    const boton = document.getElementById('btn-registro');
+    const select = document.getElementById('neighborhood_id');
+    const ayuda = document.getElementById('ayuda-barrio');
+
+    let barrios = [];
+    try {
+      const { items } = await api.get('/neighborhoods');
+      barrios = items ?? [];
+      select.innerHTML = '<option value="">Elegí tu barrio…</option>' + barrios
+        .map((b) => `<option value="${b.id}">${b.name}${b.weekday_name ? ` — ${b.weekday_name}` : ''}</option>`)
+        .join('');
+    } catch {
+      select.innerHTML = '<option value="">No se pudieron cargar los barrios</option>';
+    }
+
+    select.addEventListener('change', () => {
+      const barrio = barrios.find((b) => String(b.id) === select.value);
+      ayuda.textContent = barrio?.weekday_name
+        ? `Pasamos los ${barrio.weekday_name.toLowerCase()} por ${barrio.name}.`
+        : 'Elegí tu barrio para conocer el día de recolección.';
+    });
+
+    form.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      const datos = Object.fromEntries(new FormData(form));
+      if (datos.password?.length < 6) {
+        mostrarAviso(aviso, 'La contraseña debe tener al menos 6 caracteres.', 'error');
+        return;
+      }
+      ponerCargando(boton, true, 'Creando cuenta…');
+      try {
+        const { user, token } = await api.post('/auth/register', datos);
+        session.token = token;
+        window.location.replace(user.role === 'admin' ? '/admin.html' : '/dashboard.html');
+      } catch (error) {
+        ponerCargando(boton, false);
+        if (error instanceof ApiError) pintarErrores(form, error.details);
+        mostrarAviso(aviso, error.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

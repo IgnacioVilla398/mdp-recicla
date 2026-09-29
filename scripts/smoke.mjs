@@ -178,7 +178,106 @@ check('POST /api/collections/batch carga varios materiales',
 const me = await call('GET', '/api/auth/me', { token: clientToken });
 check('GET /api/auth/me devuelve el usuario', me.payload?.data?.user?.email === vecinoEmail);
 
-console.log('\n===== Prueba end-to-end de la API (Paso 2) =====');
+// ------------------------------------------------------------------
+// Solicitudes de cobro (Pasos 3-4)
+// ------------------------------------------------------------------
+const payoutConfig = await call('GET', '/api/payouts/config', { token: clientToken });
+check('GET /api/payouts/config expone el minimo', typeof payoutConfig.payload?.data?.min_payout_amount === 'number');
+
+const beforePayout = await call('GET', '/api/collections/summary/me', { token: clientToken });
+const saldoDisponible = Number(beforePayout.payload?.data?.totals?.available_balance ?? 0);
+check('el vecino acumula saldo cobrable', saldoDisponible > 0, `saldo ${saldoDisponible}`);
+
+// Se valida el CBU antes de crear una solicitud pendiente (una sola a la vez)
+const cbuInvalido = await call('POST', '/api/payouts', {
+  token: clientToken, body: { amount: 100, payout_method: 'cbu', payout_value: '123' },
+});
+check('valida el CBU de 22 digitos (400)', cbuInvalido.status === 400, `status ${cbuInvalido.status}`);
+
+const payoutRequest = await call('POST', '/api/payouts', {
+  token: clientToken,
+  body: { amount: saldoDisponible, payout_method: 'alias', payout_value: 'vecino.smoke.mp', payout_holder: 'Vecino Smoke' },
+});
+check('POST /api/payouts crea la solicitud', payoutRequest.status === 201, JSON.stringify(payoutRequest.payload));
+const payoutId = payoutRequest.payload?.data?.payout?.id;
+check('la solicitud queda pendiente por el saldo completo',
+  payoutRequest.payload?.data?.payout?.status === 'pending' &&
+  Number(payoutRequest.payload?.data?.payout?.amount) === saldoDisponible);
+
+const afterPayout = await call('GET', '/api/collections/summary/me', { token: clientToken });
+check('el saldo disponible pasa a 0 y el pendiente refleja la solicitud',
+  Number(afterPayout.payload?.data?.totals?.available_balance) === 0 &&
+  Number(afterPayout.payload?.data?.totals?.pending_balance) === saldoDisponible,
+  JSON.stringify(afterPayout.payload?.data?.totals));
+
+const duplicado = await call('POST', '/api/payouts', { token: clientToken, body: { amount: 1000 } });
+check('no permite dos solicitudes pendientes (409)', duplicado.status === 409, `status ${duplicado.status}`);
+
+const datosCobro = await call('PATCH', '/api/auth/me', { token: clientToken, body: { payout: { method: 'cbu', value: '1'.repeat(22), holder: 'Vecino Smoke' } } });
+check('PATCH /api/auth/me guarda datos de cobro', datosCobro.status === 200, JSON.stringify(datosCobro.payload));
+
+const payoutsCliente = await call('GET', '/api/payouts', { token: clientToken });
+check('GET /api/payouts lista la solicitud propia', payoutsCliente.payload?.data?.items?.length === 1);
+
+const reviewAsClient = await call('PATCH', `/api/payouts/${payoutId}`, { token: clientToken, body: { action: 'pay' } });
+check('un vecino no puede revisar solicitudes (403)', reviewAsClient.status === 403, `status ${reviewAsClient.status}`);
+
+const paid = await call('PATCH', `/api/payouts/${payoutId}`, { token: adminToken, body: { action: 'pay', receipt_url: 'https://ejemplo.com/comprobante.pdf' } });
+check('el admin marca la solicitud como pagada',
+  paid.payload?.data?.payout?.status === 'paid' && Boolean(paid.payload?.data?.payout?.paid_at),
+  JSON.stringify(paid.payload?.data?.payout));
+
+const sinSaldo = await call('POST', '/api/payouts', { token: clientToken, body: {} });
+check('sin saldo disponible rechaza la solicitud (400)', sinSaldo.status === 400, `status ${sinSaldo.status}`);
+
+const payoutsOverview = await call('GET', '/api/payouts/overview', { token: adminToken });
+check('GET /api/payouts/overview responde 200', payoutsOverview.status === 200 && typeof payoutsOverview.payload?.data?.totals?.paid_amount === 'number');
+
+// ------------------------------------------------------------------
+// Entrega de bolsas
+// ------------------------------------------------------------------
+const bagsAsClient = await call('POST', '/api/bags', { token: clientToken, body: { user_id: foundUser?.id, quantity: 2 } });
+check('un vecino no puede registrar entregas de bolsas (403)', bagsAsClient.status === 403, `status ${bagsAsClient.status}`);
+
+const bagsAsAdmin = await call('POST', '/api/bags', {
+  token: adminToken,
+  body: { user_id: foundUser?.id, quantity: 3, notes: 'Entrega de prueba' },
+});
+check('POST /api/bags registra la entrega', bagsAsAdmin.status === 201, JSON.stringify(bagsAsAdmin.payload));
+
+const bagsSummary = await call('GET', '/api/bags/summary/me', { token: clientToken });
+check('el vecino ve sus bolsas entregadas', Number(bagsSummary.payload?.data?.last_30d) === 3, JSON.stringify(bagsSummary.payload?.data));
+
+// ------------------------------------------------------------------
+// Cancelacion de una solicitud pendiente (segundo vecino demo)
+// ------------------------------------------------------------------
+const vecino2 = await call('POST', '/api/auth/login', { body: { email: 'vecino2@example.com', password: 'vecino123' } });
+const vecino2Token = vecino2.payload?.data?.token;
+const resumenV2 = await call('GET', '/api/collections/summary/me', { token: vecino2Token });
+const saldoV2 = Number(resumenV2.payload?.data?.totals?.available_balance ?? 0);
+if (saldoV2 > 0) {
+  const pedido = await call('POST', '/api/payouts', { token: vecino2Token, body: { amount: saldoV2 } });
+  const idPedido = pedido.payload?.data?.payout?.id;
+  check('el segundo vecino puede solicitar su cobro', pedido.status === 201, JSON.stringify(pedido.payload));
+  const cancelado = await call('POST', `/api/payouts/${idPedido}/cancel`, { token: vecino2Token });
+  check('el vecino cancela su solicitud pendiente', cancelado.payload?.data?.payout?.status === 'cancelled');
+  const resumenPost = await call('GET', '/api/collections/summary/me', { token: vecino2Token });
+  check('al cancelar, el saldo vuelve a estar disponible',
+    Number(resumenPost.payload?.data?.totals?.available_balance) === saldoV2,
+    JSON.stringify(resumenPost.payload?.data?.totals));
+} else {
+  check('el segundo vecino tiene saldo para solicitar', false, 'saldo 0');
+}
+
+// ------------------------------------------------------------------
+// Frontend estatico (Paso 3)
+// ------------------------------------------------------------------
+for (const ruta of ['/', '/login.html', '/registro.html', '/dashboard.html', '/admin.html', '/assets/css/styles.css', '/assets/js/api.js', '/assets/js/dashboard.js']) {
+  const res = await fetch(`${BASE}${ruta}`);
+  check(`GET ${ruta} se sirve correctamente`, res.status === 200, `status ${res.status}`);
+}
+
+console.log('\n===== Prueba end-to-end de la API (Pasos 2-3) =====');
 console.log(results.join('\n'));
 console.log(`\n  ${passed} pruebas OK, ${failed} fallidas\n`);
 process.exit(failed === 0 ? 0 : 1);

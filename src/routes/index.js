@@ -3,6 +3,8 @@ import { Router } from 'express';
 import authRouter from './auth.routes.js';
 import materialsRouter from './materials.routes.js';
 import collectionsRouter from './collections.routes.js';
+import payoutsRouter from './payouts.routes.js';
+import bagsRouter from './bags.routes.js';
 import { usersRouter, neighborhoodsRouter, routesRouter } from './users.routes.js';
 import { all } from '../db/index.js';
 import { asyncHandler, ok } from '../utils/http.js';
@@ -11,7 +13,7 @@ import config from '../config/env.js';
 const api = Router();
 
 api.get('/health', (req, res) => {
-  ok(res, { service: 'mdp-recicla-api', version: '0.2.0', step: 'paso-2-api', env: config.env, time: new Date().toISOString() });
+  ok(res, { service: 'mdp-recicla-api', version: '0.3.0', step: 'paso-3-frontend-cliente', env: config.env, time: new Date().toISOString() });
 });
 
 api.get('/db/status', asyncHandler(async (req, res) => {
@@ -23,6 +25,8 @@ api.get('/db/status', asyncHandler(async (req, res) => {
 api.use('/auth', authRouter);
 api.use('/materials', materialsRouter);
 api.use('/collections', collectionsRouter);
+api.use('/payouts', payoutsRouter);
+api.use('/bags', bagsRouter);
 api.use('/users', usersRouter);
 api.use('/neighborhoods', neighborhoodsRouter);
 api.use('/routes', routesRouter);

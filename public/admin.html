@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de administración — MdP Recicla</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♻️</text></svg>" />
+</head>
+<body>
+  <header class="barra">
+    <div class="barra__interior">
+      <a class="marca" href="/admin.html"><span class="marca__icono">♻</span> MdP Recicla · Admin</a>
+      <div class="barra__usuario">
+        <span id="nombre-usuario">Cargando…</span>
+        <button class="boton boton--secundario boton--chico" data-salir>Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="tarjeta">
+      <span class="etiqueta etiqueta--pendiente">Paso 4</span>
+      <h1>Panel de administración</h1>
+      <p>
+        Esta vista se construye en el <strong>Paso 4</strong>: ruta del día por barrio, carga rápida de
+        pesajes desde el celular, gestión de precios y de solicitudes de cobro.
+      </p>
+      <p class="texto-chico">Mientras tanto, la API ya expone todo lo necesario:</p>
+      <ul class="lista">
+        <li><a href="/api/routes/daily?weekday=2">GET /api/routes/daily?weekday=2</a><span class="texto-chico">ruta del día</span></li>
+        <li><a href="/api/materials">GET /api/materials</a><span class="texto-chico">precios por kilo</span></li>
+        <li><a href="/api/collections/overview">GET /api/collections/overview</a><span class="texto-chico">métricas del mes</span></li>
+        <li><a href="/api/payouts/overview">GET /api/payouts/overview</a><span class="texto-chico">solicitudes de cobro</span></li>
+      </ul>
+      <p class="texto-chico">Los endpoints de administración requieren el token del admin (login con <code>admin@mdprecicla.com</code>).</p>
+      <a class="boton boton--secundario" href="/dashboard.html">Ver el panel del cliente (Paso 3)</a>
+    </section>
+  </main>
+
+  <script type="module">
+    import { requerirSesion, activarBotonSalir } from '/assets/js/api.js';
+    const usuario = await requerirSesion('admin');
+    if (usuario) {
+      document.getElementById('nombre-usuario').textContent = usuario.name;
+      activarBotonSalir();
+    }
+  </script>
+</body>
+</html>
