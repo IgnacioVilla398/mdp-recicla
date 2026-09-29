@@ -18,33 +18,187 @@
     </div>
   </header>
 
+  <nav class="pestanas" role="tablist">
+    <button class="pestana" role="tab" data-panel="recorrido">🚚 Ruta del día</button>
+    <button class="pestana" role="tab" data-panel="carga">⚖️ Cargar pesaje</button>
+    <button class="pestana" role="tab" data-panel="precios">💲 Precios</button>
+    <button class="pestana" role="tab" data-panel="cobros">💸 Cobros <span class="etiqueta etiqueta--pendiente oculto" id="badge-cobros">0</span></button>
+  </nav>
+
   <main class="contenedor">
-    <section class="tarjeta">
-      <span class="etiqueta etiqueta--pendiente">Paso 4</span>
-      <h1>Panel de administración</h1>
-      <p>
-        Esta vista se construye en el <strong>Paso 4</strong>: ruta del día por barrio, carga rápida de
-        pesajes desde el celular, gestión de precios y de solicitudes de cobro.
-      </p>
-      <p class="texto-chico">Mientras tanto, la API ya expone todo lo necesario:</p>
-      <ul class="lista">
-        <li><a href="/api/routes/daily?weekday=2">GET /api/routes/daily?weekday=2</a><span class="texto-chico">ruta del día</span></li>
-        <li><a href="/api/materials">GET /api/materials</a><span class="texto-chico">precios por kilo</span></li>
-        <li><a href="/api/collections/overview">GET /api/collections/overview</a><span class="texto-chico">métricas del mes</span></li>
-        <li><a href="/api/payouts/overview">GET /api/payouts/overview</a><span class="texto-chico">solicitudes de cobro</span></li>
-      </ul>
-      <p class="texto-chico">Los endpoints de administración requieren el token del admin (login con <code>admin@mdprecicla.com</code>).</p>
-      <a class="boton boton--secundario" href="/dashboard.html">Ver el panel del cliente (Paso 3)</a>
+    <div id="aviso" class="aviso" role="status"></div>
+
+    <!-- ============ RESUMEN ============ -->
+    <section class="grilla grilla--4" id="metricas" style="margin-bottom:1rem">
+      <div class="tarjeta"><div class="cargando">…</div></div>
+    </section>
+
+    <!-- ============ RUTA DEL DÍA ============ -->
+    <section class="panel" id="panel-recorrido">
+      <div class="tarjeta">
+        <div class="tarjeta__titulo">
+          <h2>Ruta del día</h2>
+          <div class="campo" style="margin:0;min-width:150px">
+            <select id="dia-semana"></select>
+          </div>
+        </div>
+
+        <div class="chips" id="chips-recorrido"></div>
+
+        <div class="campo" style="margin-top:1rem">
+          <label for="filtro-barrio">Filtrar por barrio</label>
+          <select id="filtro-barrio"><option value="">Todos los barrios del día</option></select>
+        </div>
+
+        <div class="campo">
+          <label style="display:flex;align-items:center;gap:.5rem;font-weight:500">
+            <input type="checkbox" id="solo-pendientes" style="width:auto" /> Mostrar solo los que faltan visitar
+          </label>
+        </div>
+
+        <div id="lista-recorrido" class="cargando">Cargando recorrido…</div>
+      </div>
+    </section>
+
+    <!-- ============ CARGA RÁPIDA ============ -->
+    <section class="panel" id="panel-carga">
+      <div class="grilla grilla--2">
+        <div class="tarjeta">
+          <div class="tarjeta__titulo"><h2>1. Elegí el vecino</h2></div>
+          <div class="campo">
+            <label for="buscar-vecino">Buscar por nombre, email o dirección</label>
+            <input type="search" id="buscar-vecino" placeholder="Ej: Sofia, Roca 1122…" autocomplete="off" />
+          </div>
+          <div id="resultados-vecino"></div>
+          <div id="vecino-elegido"></div>
+        </div>
+
+        <div class="tarjeta">
+          <div class="tarjeta__titulo">
+            <h2>2. Cargá el pesaje</h2>
+            <span class="etiqueta" id="etiqueta-precio">—</span>
+          </div>
+          <form id="form-pesaje" novalidate>
+            <div class="campo">
+              <label for="material_id">Material</label>
+              <select id="material_id" name="material_id" required></select>
+            </div>
+            <div class="fila fila--2">
+              <div class="campo">
+                <label for="weight_kg">Peso (kg)</label>
+                <input type="number" id="weight_kg" name="weight_kg" step="0.01" min="0.01" inputmode="decimal" placeholder="0,00" required />
+                <div class="campo__ayuda">Usá la balanza y escribí el peso exacto.</div>
+              </div>
+              <div class="campo">
+                <label for="collected_on">Fecha</label>
+                <input type="date" id="collected_on" name="collected_on" />
+              </div>
+            </div>
+            <div class="campo">
+              <label for="notes">Nota (opcional)</label>
+              <input type="text" id="notes" name="notes" placeholder="Ej: bolsa mojada, material sucio…" />
+            </div>
+            <div class="campo" id="previsualizacion"></div>
+            <button type="submit" class="boton boton--bloque" id="btn-pesaje" disabled>Registrar pesaje</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="tarjeta" style="margin-top:1rem">
+        <div class="tarjeta__titulo">
+          <h2>Cargado en esta sesión</h2>
+          <span class="texto-chico" id="resumen-sesion"></span>
+        </div>
+        <ul class="lista" id="lista-sesion"><li><span class="texto-chico">Todavía no cargaste pesajes en esta sesión.</span></li></ul>
+      </div>
+    </section>
+
+    <!-- ============ PRECIOS ============ -->
+    <section class="panel" id="panel-precios">
+      <div class="tarjeta">
+        <div class="tarjeta__titulo">
+          <h2>Precio por kilo</h2>
+          <span class="texto-chico">Los cambios quedan registrados en el historial</span>
+        </div>
+        <div class="tabla-envoltorio">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Categoría</th>
+                <th class="num">$/kg actual</th>
+                <th>Nuevo precio</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-precios"><tr><td colspan="5" class="cargando">Cargando materiales…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tarjeta" style="margin-top:1rem">
+        <div class="tarjeta__titulo"><h2>Agregar material</h2></div>
+        <form id="form-material" class="fila fila--2" novalidate>
+          <div class="campo">
+            <label for="nuevo-nombre">Nombre</label>
+            <input type="text" id="nuevo-nombre" name="name" placeholder="Ej: Radiografía" required />
+          </div>
+          <div class="campo">
+            <label for="nuevo-categoria">Categoría</label>
+            <input type="text" id="nuevo-categoria" name="category" placeholder="Metal, Plástico…" />
+          </div>
+          <div class="campo">
+            <label for="nuevo-precio">Precio por kg (ARS)</label>
+            <input type="number" id="nuevo-precio" name="price_per_kg" step="0.01" min="0" inputmode="decimal" required />
+          </div>
+          <div class="campo">
+            <label for="nuevo-unidad">Unidad</label>
+            <select id="nuevo-unidad" name="unit">
+              <option value="kg">kg</option>
+              <option value="unidad">unidad</option>
+            </select>
+          </div>
+          <div class="campo" style="grid-column:1/-1">
+            <button type="submit" class="boton" id="btn-material">Agregar material</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ COBROS ============ -->
+    <section class="panel" id="panel-cobros">
+      <div class="tarjeta">
+        <div class="tarjeta__titulo">
+          <h2>Solicitudes pendientes</h2>
+          <span class="etiqueta etiqueta--pendiente" id="etiqueta-pendientes">—</span>
+        </div>
+        <div id="lista-pendientes" class="cargando">Cargando solicitudes…</div>
+      </div>
+
+      <div class="tarjeta" style="margin-top:1rem">
+        <div class="tarjeta__titulo"><h2>Historial de cobros</h2></div>
+        <div class="tabla-envoltorio">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Vecino</th>
+                <th class="num">Monto</th>
+                <th>Estado</th>
+                <th>Medio</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-cobros"><tr><td colspan="5" class="cargando">Cargando historial…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
     </section>
   </main>
 
-  <script type="module">
-    import { requerirSesion, activarBotonSalir } from '/assets/js/api.js';
-    const usuario = await requerirSesion('admin');
-    if (usuario) {
-      document.getElementById('nombre-usuario').textContent = usuario.name;
-      activarBotonSalir();
-    }
-  </script>
+  <footer class="contenedor">
+    <p class="texto-chico" style="text-align:center">MdP Recicla · Mar del Plata, Argentina</p>
+  </footer>
+
+  <script type="module" src="/assets/js/admin.js"></script>
 </body>
 </html>

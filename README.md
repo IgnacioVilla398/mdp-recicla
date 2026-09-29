@@ -2,7 +2,7 @@
 
 Plataforma web de recolección y monetización de residuos reciclables en Mar del Plata, Argentina.
 
-**Estado: Pasos 1, 2 y 3 completados** — base de datos, API completa (auth, materiales, pesajes, cobros y bolsas) y panel del cliente funcionando, con 53 pruebas automáticas en verde.
+**Estado: MVP completo (Pasos 1 a 4)** — base de datos, API (auth, materiales, pesajes, cobros y bolsas), panel del cliente y panel de administración funcionando, con 60 pruebas automáticas en verde.
 
 ---
 
@@ -36,7 +36,7 @@ Scripts disponibles:
 | `npm run db:seed` | Carga datos de prueba si la base está vacía |
 | `npm run db:seed -- --force` | Borra los datos del MVP y recarga |
 | `npm run db:reset` | Reconstruye la base desde cero |
-| `npm run test:api` | Prueba end-to-end de la API (53 verificaciones) |
+| `npm run test:api` | Prueba end-to-end de la API (60 verificaciones) |
 
 ### Páginas
 
@@ -45,7 +45,7 @@ Scripts disponibles:
 | `/` | Landing con precios por kilo en vivo |
 | `/login.html` · `/registro.html` | Ingreso y alta de vecino |
 | `/dashboard.html` | **Panel del cliente** (Paso 3) |
-| `/admin.html` | Panel de administración (Paso 4 — placeholder por ahora) |
+| `/admin.html` | **Panel de administración** (Paso 4) |
 
 ### Usuarios demo
 
@@ -85,6 +85,7 @@ mdp-recicla/
 │   ├── 01-esquema-bd.md       # diseño de datos (Paso 1)
 │   ├── 02-api.md              # referencia de la API (Paso 2)
 │   ├── 03-frontend-cliente.md # vistas del cliente (Paso 3)
+│   ├── 04-frontend-admin.md   # panel de administración (Paso 4)
 │   └── capturas/              # pantallas renderizadas
 ├── scripts/
 │   └── smoke.mjs              # prueba end-to-end de la API
@@ -93,12 +94,13 @@ mdp-recicla/
 │   ├── login.html             # ingreso
 │   ├── registro.html          # alta de vecino
 │   ├── dashboard.html         # panel del cliente
-│   ├── admin.html             # panel admin (Paso 4)
+│   ├── admin.html             # panel de administración
 │   └── assets/
 │       ├── css/styles.css     # sistema de diseño mobile-first
 │       └── js/
 │           ├── api.js         # cliente HTTP, formato y guardas de sesión
-│           └── dashboard.js   # render del panel del cliente
+│           ├── dashboard.js   # render del panel del cliente
+│           └── admin.js       # ruta del día, carga de pesajes, precios y cobros
 └── src/
     ├── server.js              # arranque del servidor HTTP
     ├── app.js                 # app Express, middlewares y montaje de rutas
@@ -155,4 +157,11 @@ Decisiones clave ya implementadas:
 - [x] **Paso 1** — Esquema de base de datos y estructura del backend
 - [x] **Paso 2** — API de autenticación (`register`, `login`) y gestión de materiales/pesajes
 - [x] **Paso 3** — Vistas frontend del cliente (`/dashboard`): resumen, cronograma, historial y solicitud de cobro
-- [ ] **Paso 4** — Vistas frontend del administrador (`/admin`): ruta del día, carga rápida de peso, precios y pagos
+- [x] **Paso 4** — Vistas frontend del administrador (`/admin`): ruta del día, carga rápida de peso, precios y pagos
+
+## Próximos pasos sugeridos
+
+- Notificaciones por WhatsApp/email al vecino cuando se carga un pesaje o se paga un cobro.
+- Exportación de liquidaciones mensuales (CSV/PDF) para el admin.
+- Rate limiting en `login`/`register`, rotación de `JWT_SECRET` y cifrado de los datos de cobro.
+- Despliegue: migrar de SQLite a PostgreSQL si crece el volumen y publicar la API detrás de HTTPS.

@@ -245,4 +245,78 @@ table.tabla tbody tr:last-child td { border-bottom: none; }
   display: grid; place-items: center; font-weight: 700; font-size: .85rem;
 }
 
-@media print { .barra, .boton { display: none; } }
+/* ---------- Pestanas (panel de administracion) ---------- */
+.pestanas {
+  display: flex;
+  gap: .25rem;
+  overflow-x: auto;
+  background: var(--blanco);
+  border-bottom: 1px solid var(--gris-300);
+  position: sticky;
+  top: 52px;
+  z-index: 9;
+  -webkit-overflow-scrolling: touch;
+}
+.pestana {
+  flex: 0 0 auto;
+  padding: .8rem .95rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--gris-500);
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 44px;
+}
+.pestana--activa { color: var(--verde-700); border-bottom-color: var(--verde-600); }
+.panel { display: none; }
+.panel--activo { display: block; }
+
+/* ---------- Fichas de vecino ---------- */
+.ficha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .7rem .8rem;
+  border: 1px solid var(--gris-300);
+  border-radius: var(--radio-chico);
+  background: var(--blanco);
+}
+.ficha + .ficha { margin-top: .5rem; }
+.ficha--elegida { border-color: var(--verde-600); background: var(--verde-50); }
+.ficha__datos { min-width: 0; }
+.ficha__datos strong { display: block; }
+.acciones { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: flex-end; }
+
+/* ---------- Chips de resumen ---------- */
+.chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+.chip {
+  background: var(--blanco);
+  border: 1px solid var(--gris-300);
+  border-radius: 999px;
+  padding: .35rem .75rem;
+  font-size: .84rem;
+  color: var(--gris-700);
+}
+.chip strong { color: var(--gris-900); }
+
+/* ---------- Resultados de busqueda de vecinos ---------- */
+.resultados { border: 1px solid var(--gris-300); border-radius: var(--radio-chico); background: var(--blanco); margin-top: .4rem; max-height: 18rem; overflow-y: auto; }
+.resultados__item { display: block; width: 100%; text-align: left; padding: .6rem .7rem; background: none; border: none; border-bottom: 1px solid var(--gris-100); font: inherit; cursor: pointer; }
+.resultados__item:last-child { border-bottom: none; }
+.resultados__item:hover { background: var(--verde-50); }
+
+/* ---------- Precios ---------- */
+.precio-editor { display: flex; align-items: center; gap: .5rem; }
+.precio-editor input { width: 7.5rem; text-align: right; }
+.historial { font-size: .82rem; color: var(--gris-500); padding: .5rem 0 .25rem; }
+.historial li { padding: .2rem 0; }
+
+@media (min-width: 720px) { .pestanas { top: 56px; } }
+
+@media print { .barra, .boton, .pestanas { display: none; } }
+

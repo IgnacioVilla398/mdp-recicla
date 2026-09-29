@@ -270,14 +270,42 @@ if (saldoV2 > 0) {
 }
 
 // ------------------------------------------------------------------
+// Panel de administracion (Paso 4)
+// ------------------------------------------------------------------
+const usersByWeekday = await call('GET', '/api/users?weekday=1', { token: adminToken });
+check('GET /api/users?weekday filtra por dia de recorrido',
+  usersByWeekday.status === 200 && usersByWeekday.payload?.data?.items?.every((u) => u.collection_weekday === 1),
+  JSON.stringify(usersByWeekday.payload?.data?.items?.map((u) => u.collection_weekday)));
+
+const usersByNeighborhood = await call('GET', `/api/users?neighborhood_id=${barrio?.id}`, { token: adminToken });
+check('GET /api/users?neighborhood_id filtra por barrio',
+  usersByNeighborhood.status === 200 &&
+  usersByNeighborhood.payload?.data?.items?.every((u) => u.neighborhood_id === barrio?.id),
+  JSON.stringify(usersByNeighborhood.payload?.data?.items?.map((u) => u.neighborhood_id)));
+
+const allMaterials = await call('GET', '/api/materials?include_inactive=1', { token: adminToken });
+check('el admin ve materiales inactivos', allMaterials.payload?.data?.items?.length >= materialList.length);
+
+const weeklyRoute = await call('GET', '/api/routes/week', { token: adminToken });
+check('GET /api/routes/week devuelve el cronograma semanal',
+  weeklyRoute.payload?.data?.week?.length === 7, JSON.stringify(weeklyRoute.payload?.data));
+
+const bagsHistory = await call('GET', '/api/bags', { token: adminToken });
+check('GET /api/bags lista las entregas', bagsHistory.status === 200 && bagsHistory.payload?.data?.total_bags >= 3);
+
+const materialHistory = await call('GET', `/api/materials/${materialList[0].id}/history`, { token: adminToken });
+check('GET /api/materials/:id/history es solo para admin',
+  (await call('GET', `/api/materials/${materialList[0].id}/history`, { token: clientToken })).status === 403);
+
+// ------------------------------------------------------------------
 // Frontend estatico (Paso 3)
 // ------------------------------------------------------------------
-for (const ruta of ['/', '/login.html', '/registro.html', '/dashboard.html', '/admin.html', '/assets/css/styles.css', '/assets/js/api.js', '/assets/js/dashboard.js']) {
+for (const ruta of ['/', '/login.html', '/registro.html', '/dashboard.html', '/admin.html', '/assets/css/styles.css', '/assets/js/api.js', '/assets/js/dashboard.js', '/assets/js/admin.js']) {
   const res = await fetch(`${BASE}${ruta}`);
   check(`GET ${ruta} se sirve correctamente`, res.status === 200, `status ${res.status}`);
 }
 
-console.log('\n===== Prueba end-to-end de la API (Pasos 2-3) =====');
+console.log('\n===== Prueba end-to-end de la API (Pasos 2-4) =====');
 console.log(results.join('\n'));
 console.log(`\n  ${passed} pruebas OK, ${failed} fallidas\n`);
 process.exit(failed === 0 ? 0 : 1);
