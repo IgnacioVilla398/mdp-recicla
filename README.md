@@ -91,7 +91,12 @@ mdp-recicla/
 │   └── capturas/              # pantallas renderizadas
 ├── scripts/
 │   ├── smoke.mjs              # prueba end-to-end de la API
-│   └── optimizar-imagenes.py  # genera public/img/ desde img/
+│   ├── optimizar-imagenes.py  # genera public/img/ desde img/
+│   ├── analizar-imagenes.py   # estadísticas de las fotos originales
+│   ├── hoja-de-contactos.py   # hoja de contactos rotulada de img/
+│   ├── diagnostico-hero.mjs   # mide geometría y colores del hero (DevTools)
+│   ├── diagnostico-css.mjs    # qué reglas CSS aplica el navegador y desde dónde
+│   └── contraste-hero.py      # contraste WCAG real del texto sobre la foto
 ├── public/                    # frontend
 │   ├── index.html             # landing
 │   ├── login.html             # ingreso
@@ -172,7 +177,7 @@ Decisiones clave ya implementadas:
 
 - **Precios de la landing vs. catálogo**: la landing publica $1.600 (aluminio), $350 (PET) y $9.600 (cobre), mientras el catálogo del sistema tiene $2.500, $750 y $9.500. Hay que unificarlos (ver [`docs/05-landing.md`](docs/05-landing.md)).
 - **Número de WhatsApp**: `WHATSAPP` en [`public/assets/js/landing.js`](public/assets/js/landing.js) es un placeholder.
-- **Imágenes de la landing**: el mapeo de `img/` se hizo por nombre de archivo, conviene revisar que cada foto sea la correcta para su sección.
+- **Fotos sin usar**: `reciclaje-1.png`, `reciclaje-2.jpg` y `mdp-imagen-1.png` quedaron disponibles por si se quieren cambiar las actuales.
 
 ## Próximos pasos sugeridos
 

@@ -17,10 +17,10 @@ DESTINO = RAIZ / "public" / "img"
 # (archivo origen, nombre destino, ancho, alto, relacion)
 # ancho/alto = None mantiene el tamano original en ese eje.
 TRABAJOS = [
-    # Hero: 16:9 y variantes para srcset
-    ("reciclaje-1.jpg", "hero-1600", 1600, 900, 16 / 9),
-    ("reciclaje-1.jpg", "hero-900", 900, 506, 16 / 9),
-    ("reciclaje-1.jpg", "hero-480", 480, 270, 16 / 9),
+    # Hero: foto de Mar del Plata (16:9 y variantes para srcset)
+    ("mdp-imagen-3.png", "hero-1600", 1600, 900, 16 / 9),
+    ("mdp-imagen-3.png", "hero-900", 900, 506, 16 / 9),
+    ("mdp-imagen-3.png", "hero-480", 480, 270, 16 / 9),
     # Nosotros
     ("mdp-imagen-2.png", "nosotros", 1200, 900, 4 / 3),
     # Como funciona
@@ -31,8 +31,8 @@ TRABAJOS = [
     ("plastico.png", "material-plastico", 800, 600, 4 / 3),
     ("cobre-reciclaje.png", "material-cobre", 800, 600, 4 / 3),
     ("cartom.png", "material-carton", 800, 600, 4 / 3),
-    # Imagen de apoyo para la seccion de zonas / CTA
-    ("mdp-imagen-1.png", "ciudad", 1400, 788, 16 / 9),
+    # Fondo del CTA final
+    ("reciclaje-1.jpg", "ciudad", 1400, 788, 16 / 9),
 ]
 
 CALIDAD_WEBP = 78

@@ -230,21 +230,6 @@ table.tabla tbody tr:last-child td { border-bottom: none; }
 .auth__marca .marca { justify-content: center; font-size: 1.25rem; }
 .auth__pie { text-align: center; font-size: .88rem; margin-top: 1rem; color: var(--gris-500); }
 
-/* ---------- Landing ---------- */
-.hero { padding: 2.5rem 0 1.5rem; text-align: center; }
-.hero h1 { font-size: 1.9rem; }
-.hero p { color: var(--gris-700); max-width: 40rem; margin: 0 auto 1.25rem; }
-.hero__acciones { display: flex; flex-direction: column; gap: .6rem; max-width: 320px; margin: 0 auto; }
-@media (min-width: 560px) { .hero__acciones { flex-direction: row; justify-content: center; max-width: none; } }
-.pasos { list-style: none; padding: 0; margin: 0; counter-reset: paso; display: grid; gap: .85rem; }
-.pasos li { counter-increment: paso; display: flex; gap: .75rem; align-items: flex-start; }
-.pasos li::before {
-  content: counter(paso);
-  flex: 0 0 28px; height: 28px; border-radius: 50%;
-  background: var(--verde-100); color: var(--verde-900);
-  display: grid; place-items: center; font-weight: 700; font-size: .85rem;
-}
-
 /* ---------- Pestanas (panel de administracion) ---------- */
 .pestanas {
   display: flex;
